@@ -28,3 +28,7 @@ Code I wrote while learning [Haskell](http://www.haskell.org/)
     * [Heathrow To London](http://learnyouahaskell.com/functionally-solving-problems#heathrow-to-london) - `LearnYouAHaskell.HeathrowToLondon`
 
 2. Lisp Interpreter - `Lisp`
+
+3. [UPenn CIS 194: Introduction to Haskell (Fall 2014)](http://www.cis.upenn.edu/~cis194/)
+
+    * [Homework 1](http://www.cis.upenn.edu/~cis194/hw/01-intro.pdf) - `CIS194.HW01`
