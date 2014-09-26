@@ -10,7 +10,11 @@ Code I wrote while learning [Haskell](http://www.haskell.org/)
 
     `$ cabal sandbox init`
 
-4. Run the tests to verify everything works:
+4. Download dependencies:
+
+    `$ cabal install --only-dependencies`
+
+5. Run the tests to verify everything works:
 
     `$ cabal run spec`
 
@@ -21,3 +25,4 @@ Code I wrote while learning [Haskell](http://www.haskell.org/)
     And did Exercises:
 
     * [Reverse Polish Notation Calculator](http://learnyouahaskell.com/functionally-solving-problems#reverse-polish-notation-calculator) - `LearnYouAHaskell.SolveRPN`
+    * [Heathrow To London](http://learnyouahaskell.com/functionally-solving-problems#heathrow-to-london) - `LearnYouAHaskell.HeathrowToLondon`
