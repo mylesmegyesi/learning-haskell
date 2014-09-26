@@ -18,5 +18,4 @@ executable spec
 
   build-depends:
     base == 4.6.*,
-    hspec == 1.11.3,
-    hlint == 1.9.4
+    hspec == 1.11.3
