@@ -1,12 +1,12 @@
 module Lisp.ReaderSpec where
 
-import Test.Hspec (describe, it, shouldBe, shouldThrow, anyException)
+import Test.Hspec (Spec, describe, it, shouldBe)
 import Lisp.Reader (read, ASTNode(IntegerNode, StringNode))
 import Prelude hiding (read)
 
+spec :: Spec
 spec =
   describe "Lisp.Reader" $ do
-
     it "reads an integer" $ do
       read "1" `shouldBe` (IntegerNode "1")
       read "2" `shouldBe` (IntegerNode "2")

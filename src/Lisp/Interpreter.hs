@@ -7,7 +7,7 @@ instance Eval Int where
   evalThing = read
 
 instance Eval [a] where
-  evalThing thing = []
+  evalThing _ = []
 
 eval :: (Eval a) => String -> a
 eval = evalThing

@@ -1,6 +1,6 @@
 module LearnYouAHaskell.HeathrowToLondonSpec (spec) where
 
-import Test.Hspec (describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldBe)
 import LearnYouAHaskell.HeathrowToLondon (
     leastExpensiveRouteToLeaf
     , Edge(Edge)
@@ -8,6 +8,9 @@ import LearnYouAHaskell.HeathrowToLondon (
     )
 
 makeEdges :: [Int] -> (Edge, Edge)
+makeEdges [] = (Edge 0 Leaf, Edge 0 Leaf)
+makeEdges [x] = (Edge x Leaf, Edge x Leaf)
+makeEdges [x, y] = (Edge x Leaf, Edge y Leaf)
 makeEdges (x:y:0:[]) = (Edge x Leaf, Edge y Leaf)
 makeEdges (x:y:z:xs) = (left, right)
   where (leftEdge, rightEdge) = makeEdges xs
@@ -18,17 +21,19 @@ makeStartingNode :: [Int] -> Node
 makeStartingNode weights = Fork left right
   where (left, right) = makeEdges weights
 
+heathrowToLondon :: Node
 heathrowToLondon = makeStartingNode [50, 10, 30, 5, 90, 20, 40, 2, 25, 10, 8, 0]
 
 getWeight :: Edge -> Int
-getWeight (Edge weight i) = weight
+getWeight (Edge weight _) = weight
 
-weights :: [Edge] -> [Int]
-weights = map getWeight
+edgeWeights :: [Edge] -> [Int]
+edgeWeights = map getWeight
 
+spec :: Spec
 spec =
   describe "fastestRoute" $ do
     it "solves the Heathrow to London map" $
       let edgesToLeaf = leastExpensiveRouteToLeaf heathrowToLondon
       in
-        weights edgesToLeaf `shouldBe` [10, 30, 5, 20, 2, 8]
+        edgeWeights edgesToLeaf `shouldBe` [10, 30, 5, 20, 2, 8]

@@ -15,7 +15,8 @@ module CIS194.HW02
     ) where
 
 import CIS194.Words (allWords, scrabbleValue)
-import Data.List (delete, elem, foldl, map, maximum)
+import Data.List (delete)
+import Prelude hiding (words)
 
 -- Though a Scrabble hand is the same Haskell type as a Scrabble word, they
 -- have different properties. Specifically, a hand is unordered whereas a word
@@ -56,6 +57,8 @@ wordsFrom hand = filter (`formableBy` hand) allWords
 
 compareTemplateToWord :: Word -> Template -> Word -> (Bool, Word)
 compareTemplateToWord acc [] [] = (True, reverse acc)
+compareTemplateToWord acc (_:_) [] = (True, reverse acc)
+compareTemplateToWord acc [] (_:_) = (True, reverse acc)
 compareTemplateToWord acc (x:xs) (y:ys)
     | x == '?' = compareTemplateToWord (y:acc) xs ys
     | x == y = compareTemplateToWord acc xs ys
@@ -66,7 +69,7 @@ wordFitsTemplate template hand word
     | (length word) /= (length template) = False
     | otherwise =
         case (compareTemplateToWord [] template word) of
-            (True, word) -> formableBy word hand
+            (True, remainingWord) -> formableBy remainingWord hand
             (False, _) -> False
 
 wordsFittingTemplate :: Template -> Hand -> [Word]
@@ -92,7 +95,7 @@ bestWords words =
 calculateMultiplier :: Int -> Char -> Int
 calculateMultiplier m '2' = m * 2
 calculateMultiplier m '3' = m * 3
-calculateMultiplier m l = m
+calculateMultiplier m _ = m
 
 scoreLetterByTemplate :: Char -> Char -> Int
 scoreLetterByTemplate 'D' l = 2 * (scrabbleValue l)
@@ -101,6 +104,8 @@ scoreLetterByTemplate _ l = (scrabbleValue l)
 
 scoreWordByTemplate :: STemplate -> Word -> Int
 scoreWordByTemplate [] [] = 0
+scoreWordByTemplate (_:_) [] = 0
+scoreWordByTemplate [] (_:_) = 0
 scoreWordByTemplate (t:ts) (l:ls) =
     (scoreLetterByTemplate t l) + (scoreWordByTemplate ts ls)
 

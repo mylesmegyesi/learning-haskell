@@ -16,7 +16,9 @@ readInt (first:rest)
   where (IntegerNode restAsInt) = readInt rest
 
 read :: String -> ASTNode
+read [] = (IntegerNode "")
 read arg@(first:rest)
     | (first == ' ') = read rest
     | (first == '"') = (StringNode (init rest))
     | (isDigit first) || (first == '-') = readInt arg
+    | otherwise = read []

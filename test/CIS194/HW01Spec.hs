@@ -1,6 +1,6 @@
 module CIS194.HW01Spec where
 
-import Test.Hspec (describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldBe)
 import CIS194.HW01
     ( lastDigit
     , dropLastDigit
@@ -11,6 +11,7 @@ import CIS194.HW01
     , hanoi
     )
 
+spec :: Spec
 spec =
   describe "CIS 194 Homework 1" $ do
     describe "Exercise 1" $ do

@@ -1,6 +1,6 @@
 module CIS194.HW02Spec where
 
-import Test.Hspec (describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldBe)
 import CIS194.HW02
     ( formableBy
     , wordsFrom
@@ -11,6 +11,7 @@ import CIS194.HW02
     , scrabbleValueTemplate
     )
 
+spec :: Spec
 spec =
   describe "CIS 194 Homework 2" $ do
     describe "Exercise 1" $ do

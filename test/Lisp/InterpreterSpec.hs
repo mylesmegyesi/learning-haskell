@@ -1,8 +1,9 @@
 module Lisp.InterpreterSpec where
 
-import Test.Hspec (describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldBe)
 import Lisp.Interpreter (eval)
 
+spec :: Spec
 spec =
   describe "Lisp.Interpreter" $ do
 

@@ -9,12 +9,11 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 executable spec
-  main-is:
-    Spec.hs
+  ghc-options: -Wall -Werror
 
-  hs-source-dirs:
-    src,
-    test
+  main-is: Spec.hs
+
+  hs-source-dirs: src, test
 
   build-depends:
     base == 4.6.*,
