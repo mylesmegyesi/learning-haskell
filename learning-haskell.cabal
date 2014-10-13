@@ -1,0 +1,21 @@
+name:                learning-haskell
+version:             0.1.0.0
+synopsis:            Learning Haskell
+homepage:            https://github.com/mylesmegyesi/learning-haskell
+author:              Myles Megyesi
+maintainer:          myles.megyesi@gmail.com
+category:            Learning
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable spec
+  main-is:
+    Spec.hs
+
+  hs-source-dirs:
+    src,
+    test
+
+  build-depends:
+    base == 4.6.*,
+    hspec == 1.11.3

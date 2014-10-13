@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+rm -rf .cabal-sandbox dist
+rm cabal.sandbox.config
