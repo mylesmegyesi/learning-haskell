@@ -32,3 +32,4 @@ Code I wrote while learning [Haskell](http://www.haskell.org/)
 3. [UPenn CIS 194: Introduction to Haskell (Fall 2014)](http://www.cis.upenn.edu/~cis194/)
 
     * [Homework 1](http://www.cis.upenn.edu/~cis194/hw/01-intro.pdf) - `CIS194.HW01`
+    * [Homework 2](http://www.cis.upenn.edu/~cis194/hw/02-dict.pdf) - `CIS194.HW02`
