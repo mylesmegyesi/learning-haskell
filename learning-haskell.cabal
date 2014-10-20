@@ -17,4 +17,5 @@ executable spec
 
   build-depends:
     base == 4.6.*,
-    hspec == 1.11.3
+    hspec == 1.11.3,
+    parsec == 3.1.7
