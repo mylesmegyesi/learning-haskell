@@ -6,26 +6,38 @@ Notes: I'm not in the class bro, I just like Haskell
 
 module CIS194.HW03
     ( compareMsgs
+    , messagesAbout
     , parse
     , parseMessage
     , sortMessages
     , validMessagesOnly
     , whatWentWrong
+    , whatWentWrongEnhanced
     ) where
 
-import Data.List (sortBy)
+import Data.Char
+    ( isSpace
+    , toLower
+    )
+import Data.List
+    ( isInfixOf
+    , sortBy
+    )
 import Prelude hiding (log)
 import Text.Read (readMaybe)
+
 import CIS194.Log
     ( LogMessage(LogMessage)
     , MaybeLogMessage(ValidLM, InvalidLM)
     , MessageType(Info, Warning, Error)
     )
 
+removePartionChar :: (String, String) -> (String, String)
+removePartionChar (before, (_:after)) = (before, after)
+removePartionChar (before, []) = (before, [])
+
 splitOnFirstSpace :: String -> (String, String)
-splitOnFirstSpace s = (beforeSpace, afterSpace)
-    where isSpace = (== ' ')
-          (beforeSpace, (_:afterSpace)) = break isSpace s
+splitOnFirstSpace s = removePartionChar $ break isSpace s
 
 parseLeadingInt :: String -> (Maybe Int, String)
 parseLeadingInt s = (readMaybe rawInt, rawMessage)
@@ -79,5 +91,23 @@ compareSeverity _ _ = False
 extractMessage :: LogMessage -> String
 extractMessage (LogMessage _ _ message) = message
 
+isHighSeverity :: LogMessage -> Bool
+isHighSeverity = compareSeverity (>= 50)
+
 whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong = (map extractMessage) . filter (compareSeverity (>= 50))
+whatWentWrong = (map extractMessage) . filter isHighSeverity
+
+sToLower :: String -> String
+sToLower = (map toLower)
+
+messageContains :: String -> LogMessage -> Bool
+messageContains s (LogMessage _ _ message) = isInfixOf (sToLower s) (sToLower message)
+
+messagesAbout :: String -> [LogMessage] -> [LogMessage]
+messagesAbout s = filter (messageContains s)
+
+(|||) :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+(|||) f g x = f x || g x
+
+whatWentWrongEnhanced :: String -> [LogMessage] -> [String]
+whatWentWrongEnhanced s = (map extractMessage) . filter (isHighSeverity ||| (messageContains s))

@@ -3,11 +3,13 @@ module CIS194.HW03Spec where
 import Test.Hspec (Spec, describe, it, shouldBe)
 import CIS194.HW03
     ( compareMsgs
+    , messagesAbout
     , parse
     , parseMessage
     , sortMessages
     , validMessagesOnly
     , whatWentWrong
+    , whatWentWrongEnhanced
     )
 import CIS194.Log
     ( MaybeLogMessage(ValidLM, InvalidLM)
@@ -94,4 +96,46 @@ spec =
           results `shouldBe` [ "Way too many pickles"
                              , "Bad pickle-flange interaction detected"
                              , "Flange failed!"
+                             ]
+
+    describe "Exercise 7" $ do
+      describe "messagesAbout" $ do
+        it "filters logs that contain the given phrase in the message" $ do
+          let message1 = (LogMessage Warning 153 "message number one")
+              message2 = (LogMessage Info 208 "message number two") in
+              messagesAbout "one" [message1, message2] `shouldBe` [message1]
+
+        it "matches logs case insenstive on the match to string" $ do
+          let message1 = (LogMessage Warning 153 "message number one")
+              message2 = (LogMessage Info 208 "message number two") in
+              messagesAbout "OnE" [message1, message2] `shouldBe` [message1]
+
+        it "matches logs case insenstive on the log string" $ do
+          let message1 = (LogMessage Warning 153 "message number ONE")
+              message2 = (LogMessage Info 208 "message number two") in
+              messagesAbout "one" [message1, message2] `shouldBe` [message1]
+
+        it "returns nothing if there are no matches" $ do
+          let message1 = (LogMessage Warning 153 "message number ONE")
+              message2 = (LogMessage Info 208 "message number two") in
+              messagesAbout "something" [message1, message2] `shouldBe` []
+
+        it "matches on multiple" $ do
+          let message1 = (LogMessage Warning 153 "message number ONE")
+              message2 = (LogMessage Info 208 "message number two") in
+              messagesAbout "message" [message1, message2] `shouldBe` [message1, message2]
+
+    describe "Exercise 8" $ do
+      describe "whatWentWrongEnhanced" $ do
+        it "returns high severity messages and messages containing a certain keyword" $ do
+          results <- testWhatWentWrong parse (whatWentWrongEnhanced "relish") "src/CIS194/error.log"
+          results `shouldBe` [ "Twenty seconds remaining until out-of-mustard condition"
+                             , "Hard drive failure: insufficient mustard"
+                             , "Empty mustard reservoir! Attempting to recover..."
+                             , "Depletion of mustard stores detected!"
+                             , "Recovery failed! Initiating shutdown sequence"
+                             , "All backup mustardwatches are busy"
+                             , "All backup mustardwatches are busy"
+                             , "Mustardwatch opened, please close for proper functioning!"
+                             , "Ten seconds remaining until out-of-mustard condition"
                              ]
