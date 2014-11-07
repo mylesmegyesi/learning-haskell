@@ -3,7 +3,12 @@ module Lisp.ReaderSpec where
 import Test.Hspec (Spec, describe, it, shouldBe, pendingWith)
 import Lisp.Reader
     (
-      ASTNode(IntegerNode, StringNode, ListNode)
+      ASTNode( IntegerNode
+             , FloatNode
+             , ListNode
+             , StringNode
+             , VectorNode
+             )
     , readString
     )
 
@@ -33,6 +38,14 @@ spec =
 
       it "ignores trailing whitespace of a negative number" $ do
         readString "-22 " `shouldBe` [(IntegerNode False "22")]
+
+      it "ignores positive signs number" $ do
+        readString "+22 " `shouldBe` [(IntegerNode True "22")]
+
+    describe "reading floats" $ do
+      it "reads a float with a decimal" $ do
+        pendingWith "get me to work"
+        readString "1.0" `shouldBe` [(FloatNode True "1" "0")]
 
     describe "reading strings" $ do
       it "reads a string" $ do
@@ -81,11 +94,58 @@ spec =
                                                   , (IntegerNode True "2")
                                                   ])]
 
+      it "handles newlines at any point in the list" $ do
+        expectedResult <- return [(ListNode [(IntegerNode True "1"), (IntegerNode True "2")])]
+        readString "\n(1, 2)" `shouldBe` expectedResult
+        readString "(\n1, 2)" `shouldBe` expectedResult
+        readString "(1\n, 2)" `shouldBe` expectedResult
+        readString "(1,\n2)" `shouldBe` expectedResult
+        readString "(1,2\n)" `shouldBe` expectedResult
+        readString "(1,2)\n" `shouldBe` expectedResult
+
       it "does not allow leading commas before elements in a list" $ do
         pendingWith "readString \"(,1)\""
 
       it "does not allow a trailing commas after the last element in a list" $ do
         pendingWith "readString \"(1,)\""
+        pendingWith "readString \"(1,1,)\""
 
       it "does not allow multiple commas between elements in a list" $ do
         pendingWith "readString \"(1 ,, 1)\""
+
+    describe "reading vectors" $ do
+      it "reads an empty vector" $ do
+        readString "[]" `shouldBe` [(VectorNode [])]
+
+      it "reads a vector with one item" $ do
+        readString "[1]" `shouldBe` [(VectorNode [(IntegerNode True "1")])]
+
+      it "reads a vector with two items" $ do
+        readString "[1 2]" `shouldBe` [(VectorNode [ (IntegerNode True "1")
+                                                   , (IntegerNode True "2")])]
+
+      it "reads a vector with spaces at any point" $ do
+        expectedResult <- return [(VectorNode [(IntegerNode True "1"), (IntegerNode True "2")])]
+        readString " [1 2]" `shouldBe` expectedResult
+        readString "  [1 2]" `shouldBe` expectedResult
+        readString "[ 1 2]" `shouldBe` expectedResult
+        readString "[  1 2]" `shouldBe` expectedResult
+        readString "[1  2]" `shouldBe` expectedResult
+        readString "[1   2]" `shouldBe` expectedResult
+        readString "[1 2 ]" `shouldBe` expectedResult
+        readString "[1 2  ]" `shouldBe` expectedResult
+        readString "[1 2] " `shouldBe` expectedResult
+        readString "[1 2]  " `shouldBe` expectedResult
+
+      it "reads a vector with newlines at any point" $ do
+        expectedResult <- return [(VectorNode [(IntegerNode True "1"), (IntegerNode True "2")])]
+        readString "\n[1 2]" `shouldBe` expectedResult
+        readString "\n\n[1 2]" `shouldBe` expectedResult
+        readString "[\n1 2]" `shouldBe` expectedResult
+        readString "[\n\n1 2]" `shouldBe` expectedResult
+        readString "[1\n\n2]" `shouldBe` expectedResult
+        readString "[1\n\n\n2]" `shouldBe` expectedResult
+        readString "[1 2\n]" `shouldBe` expectedResult
+        readString "[1 2\n\n]" `shouldBe` expectedResult
+        readString "[1 2]\n" `shouldBe` expectedResult
+        readString "[1 2]\n\n" `shouldBe` expectedResult

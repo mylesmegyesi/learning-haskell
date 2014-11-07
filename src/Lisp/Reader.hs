@@ -1,14 +1,19 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 module Lisp.Reader
-    ( ASTNode(IntegerNode, StringNode, ListNode)
+    ( ASTNode( IntegerNode
+             , FloatNode
+             , ListNode
+             , StringNode
+             , VectorNode
+             )
     , readString
     ) where
-
-import Control.Applicative
-     ( (<|>)
-     )
-
+import Text.Parsec
+    ( (<|>)
+    , Stream
+    , ParsecT
+    )
 import Text.ParserCombinators.Parsec
     ( Parser
     , char
@@ -17,27 +22,35 @@ import Text.ParserCombinators.Parsec
     , many1
     , noneOf
     , parse
+    , oneOf
     , optionMaybe
     , sepBy
     , spaces
     )
 
-import Text.Parsec.Prim
-    ( Stream
-    , ParsecT
-    )
-
 data ASTNode = IntegerNode Bool String
-             | StringNode String
+             | FloatNode Bool String String
              | ListNode [ASTNode]
-             deriving (Show, Eq)
+             | StringNode String
+             | VectorNode [ASTNode]
+             deriving (Eq, Show)
+
+isPositive :: Maybe Char -> Bool
+isPositive Nothing = True
+isPositive (Just '+') = True
+isPositive (Just _) = False
 
 parseInt :: Parser ASTNode
-parseInt = do isNegative <- optionMaybe (char '-')
+parseInt = do maybeSign <- optionMaybe (oneOf "-+")
               result <- many1 digit
-              case isNegative of
-                  Just _ -> return (IntegerNode False result)
-                  Nothing -> return (IntegerNode True result)
+              return (IntegerNode (isPositive maybeSign) result)
+
+parseFloat :: Parser ASTNode
+parseFloat = do maybeSign <- optionMaybe (oneOf "-+")
+                intPart <- many1 digit
+                _ <- char '.'
+                decimalPart <- many1 digit
+                return (FloatNode (isPositive maybeSign) intPart decimalPart)
 
 parseString :: Parser ASTNode
 parseString = do _ <- char '"'
@@ -57,9 +70,15 @@ parseList = do _ <- char '('
                _ <- char ')'
                return (ListNode exprs)
 
+parseVector :: Parser ASTNode
+parseVector = do _ <- char '['
+                 exprs <- (parseExpr `sepBy` elementSeparator)
+                 _ <- char ']'
+                 return (VectorNode exprs)
+
 parseExpr :: Parser ASTNode
 parseExpr = do spaces
-               result <- parseInt <|> parseString <|> parseList
+               result <- parseInt <|> parseFloat <|> parseString <|> parseList <|> parseVector
                spaces
                return result
 
